@@ -11,19 +11,23 @@ body {
     margin: 0;
     padding: 20px;
 }
+html, body {
+    height: auto;
+}
 
 .invoice-box {
     width: 210mm;
-    height: 297mm;
-    padding: 10mm;
-    margin: auto;
+    height: 297mm;              /* exact A4 height */
+    padding: 8mm;               /* reduce slightly */
+    margin: 0 auto;
     background: white;
-    box-sizing: border-box;
+    box-sizing: border-box;     /* ensures padding stays inside 297mm */
+    overflow: hidden;           
 }
 
 .inner-border {
-    border: 3px double #000;
     height: 100%;
+    border: 3px double black;
     padding: 5px;
     box-sizing: border-box;
     display: flex;
@@ -92,7 +96,20 @@ th, td {
     .action-buttons{
         display:none;
     }
+
+    html, body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 0;
+    }
 }
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -300,14 +317,31 @@ numberToWords(rupees) + " Rupees And " + numberToWords(paisa) + " Paisa Only";
 function goBack(){ window.location.href="index.html"; }
 
 function downloadPDF(){
+
     const element = document.getElementById("invoiceContent");
+
     const opt = {
         margin: 0,
         filename: 'Sana_Invoice_' + localStorage.getItem("invoiceNo") + '.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, scrollY: -window.scrollY },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            scrollY: 0
+        },
+
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        },
+
+        pagebreak: {
+            mode: ['avoid-all', 'css', 'legacy']
+        }
     };
+
     html2pdf().set(opt).from(element).save();
 }
 </script>
