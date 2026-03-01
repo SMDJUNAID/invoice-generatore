@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice - Sana Mines and Minerals</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+body {
+    font-family: 'Times New Roman', serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.invoice-box {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm;
+    margin: auto;
+    background: white;
+    box-sizing: border-box;
+}
+
+.inner-border {
+    border: 3px double #000;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    text-align: center;
+    border-bottom: 1px solid #000;
+    padding-bottom: 8px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 2px 0;
+    font-size: 13px;
+    font-weight: bold;
+    color: #00008b;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 4px 6px;
+    vertical-align: top;
+}
+
+.amt-header { text-align: center; }
+.col-rs { width: 70px; text-align: right; border-right: 1px solid #000; }
+.col-ps { width: 30px; text-align: center; border-left: none; }
+
+.items-table { flex-grow: 1; margin-top: -1px; }
+
+.footer-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-top: auto;
+}
+
+.bank-details { font-size: 12px; }
+.sig-area { text-align: center; font-size: 13px; width: 250px; }
+
+.action-buttons{
+    text-align:center;
+    margin-top:20px;
+}
+
+.action-buttons button{
+    padding:8px 20px;
+    margin:0 10px;
+    font-size:14px;
+    cursor:pointer;
+}
+
+@media print {
+    .action-buttons{
+        display:none;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="invoice-box" id="invoiceContent">
+<div class="inner-border">
+
+<div class="header">
+    <h1>SANA MINES AND MINERALS</h1>
+    <p>Miners & Mfrs Quartz, LimeStone, LimeStone Powder, Silica Sand</p>
+    <p>Quartzite, Dolomite, Calcite & Other Minerals.</p>
+    <div style="font-size: 11px;">
+        7/80/B1/A2, Nadigadda Street, Nandyal(M)-518501, Nandyal Dt, A.P.
+    </div>
+</div>
+
+<table>
+<tr>
+<td style="width:20%">Reverse Charge</td><td style="width:30%"></td>
+<td style="width:20%">Transport Mode</td><td><b>BY Road</b></td>
+</tr>
+<tr>
+<td>Invoice No.</td><td><b id="invNo"></b></td>
+<td>Vehicle Number</td><td><b id="vehNo"></b></td>
+</tr>
+<tr>
+<td>Invoice Date</td><td><b id="invDate"></b></td>
+<td>Place of Supply</td><td><b>Orvakal</b></td>
+</tr>
+<tr>
+<td>State</td><td><b>AP</b></td>
+<td>State Code</td><td><b>37</b></td>
+</tr>
+</table>
+
+<div style="text-align:center; font-weight:bold; border: 1px solid #000; border-top:none; padding:2px;">
+Billed to Party
+</div>
+
+<table style="margin-top:-1px;">
+<tr><td style="width:15%">Name</td><td colspan="3"><b>GVR TRANSMINING PVT LTD.</b></td></tr>
+<tr>
+<td>Address</td>
+<td colspan="3">
+FLAT NO 502, VIJAYALAKSHMI NIVASAMU <br>
+APPARTMENT, CHANIKYAPURI COLONY, KURNOOL, A.P.- 518002
+</td>
+</tr>
+<tr><td>GSTIN</td><td><b>37AAHCG1866E2ZJ</b></td><td>PAN NO</td><td></td></tr>
+<tr><td>State</td><td>AP</td><td>State Code</td><td>37</td></tr>
+</table>
+
+<table class="items-table">
+<thead>
+<tr>
+<th rowspan="2" style="width:5%">Sl. No</th>
+<th rowspan="2" style="width:40%">Description of Product/Service</th>
+<th rowspan="2" style="width:10%">HSN Code</th>
+<th rowspan="2" style="width:8%">Qty.</th>
+<th rowspan="2" style="width:8%">Units</th>
+<th rowspan="2" style="width:10%">Rate</th>
+<th colspan="2" class="amt-header">Amount</th>
+</tr>
+<tr>
+<th>Rs.</th>
+<th>Ps.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1</td>
+<td><b>Lime Stone Powder</b></td>
+<td align="center">2521</td>
+<td align="center" id="qtyCell"></td>
+<td></td>
+<td align="center" id="rateCell"></td>
+<td class="col-rs" id="amtRs"></td>
+<td class="col-ps" id="amtPs"></td>
+</tr>
+<tr>
+<td style="height:250px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+</tbody>
+</table>
+
+<table style="margin-top:-1px;">
+<tr>
+<td rowspan="5" style="width:55%; font-weight:bold;" id="amountWords"></td>
+<td>Tax Amount Before Tax</td>
+<td class="col-rs" id="taxRs"></td>
+<td class="col-ps" id="taxPs"></td>
+</tr>
+<tr>
+<td>Add CGST: 2.5%</td>
+<td class="col-rs" id="cgstRs"></td>
+<td class="col-ps" id="cgstPs"></td>
+</tr>
+<tr>
+<td>Add SGST: 2.5%</td>
+<td class="col-rs" id="sgstRs"></td>
+<td class="col-ps" id="sgstPs"></td>
+</tr>
+<tr>
+<td><b>Total Tax Amount</b></td>
+<td class="col-rs" id="totalTaxRs"></td>
+<td class="col-ps" id="totalTaxPs"></td>
+</tr>
+<tr>
+<td><b>Total Amount after Tax</b></td>
+<td class="col-rs"><b id="finalRs"></b></td>
+<td class="col-ps"><b id="finalPs"></b></td>
+</tr>
+</table>
+
+<div class="footer-section">
+<div class="bank-details">
+<b>STATE BANK OF INDIA</b><br>
+SME Branch, Nandyal<br>
+A/c No.: 40472614798<br>
+IFSC: SBIN0017981
+</div>
+<div class="sig-area">
+For <b>SANA MINES AND MINERALS</b><br><br><br>
+Proprietor/Authorized Signatory
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="action-buttons">
+    <button onclick="goBack()">⬅ Back to Edit</button>
+    <button onclick="downloadPDF()">⬇ Download PDF</button>
+</div>
+
+<script>
+function formatINR(num){
+    return num.toLocaleString("en-IN",{minimumFractionDigits:2});
+}
+function splitAmount(num){
+    let parts = formatINR(num).split(".");
+    return { rs: parts[0], ps: parts[1] };
+}
+function numberToWords(n){
+const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+"Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen",
+"Eighteen","Nineteen"];
+const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+if(n<20) return a[n];
+if(n<100) return b[Math.floor(n/10)]+" "+a[n%10];
+if(n<1000) return a[Math.floor(n/100)]+" Hundred "+numberToWords(n%100);
+if(n<100000) return numberToWords(Math.floor(n/1000))+" Thousand "+numberToWords(n%1000);
+if(n<10000000) return numberToWords(Math.floor(n/100000))+" Lakh "+numberToWords(n%100000);
+return numberToWords(Math.floor(n/10000000))+" Crore "+numberToWords(n%10000000);
+}
+
+window.onload = function(){
+const invoiceNo = localStorage.getItem("invoiceNo");
+const invoiceDate = localStorage.getItem("invoiceDate");
+const vehicleNo = localStorage.getItem("vehicleNo");
+const qty = parseFloat(localStorage.getItem("qty"));
+const rate = parseFloat(localStorage.getItem("rate"));
+
+const amount = qty * rate;
+const cgst = amount * 0.025;
+const sgst = amount * 0.025;
+const totalTax = cgst + sgst;
+const final = amount + totalTax;
+
+document.getElementById("invNo").innerText = invoiceNo;
+document.getElementById("vehNo").innerText = vehicleNo;
+document.getElementById("invDate").innerText = invoiceDate;
+document.getElementById("qtyCell").innerText = qty.toFixed(2);
+document.getElementById("rateCell").innerText = rate.toFixed(2);
+
+let aSplit = splitAmount(amount);
+document.getElementById("amtRs").innerText = aSplit.rs;
+document.getElementById("amtPs").innerText = aSplit.ps;
+document.getElementById("taxRs").innerText = aSplit.rs;
+document.getElementById("taxPs").innerText = aSplit.ps;
+
+let cSplit = splitAmount(cgst);
+document.getElementById("cgstRs").innerText = cSplit.rs;
+document.getElementById("cgstPs").innerText = cSplit.ps;
+
+let sSplit = splitAmount(sgst);
+document.getElementById("sgstRs").innerText = sSplit.rs;
+document.getElementById("sgstPs").innerText = sSplit.ps;
+
+let tSplit = splitAmount(totalTax);
+document.getElementById("totalTaxRs").innerText = tSplit.rs;
+document.getElementById("totalTaxPs").innerText = tSplit.ps;
+
+let fSplit = splitAmount(final);
+document.getElementById("finalRs").innerText = fSplit.rs;
+document.getElementById("finalPs").innerText = fSplit.ps;
+
+let rupees = Math.floor(final);
+let paisa = Math.round((final - rupees) * 100);
+
+document.getElementById("amountWords").innerHTML =
+numberToWords(rupees) + " Rupees And " + numberToWords(paisa) + " Paisa Only";
+};
+
+function goBack(){ window.location.href="index.html"; }
+
+function downloadPDF(){
+    const element = document.getElementById("invoiceContent");
+    const opt = {
+        margin: 0,
+        filename: 'Sana_Invoice_' + localStorage.getItem("invoiceNo") + '.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 3, scrollY: -window.scrollY },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+</script>
+
+</body>
+</html>
