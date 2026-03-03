@@ -181,8 +181,8 @@ APPARTMENT, CHANIKYAPURI COLONY, KURNOOL, A.P.- 518002
 <tbody>
 <tr>
 <td align="center">1</td>
-<td><b>Lime Stone Powder</b></td>
-<td align="center">2521</td>
+<td><b id="productCell"></b></td>
+<td align="center" id="hsnCell"></td>
 <td align="center" id="qtyCell"></td>
 <td></td>
 <td align="center" id="rateCell"></td>
@@ -245,7 +245,10 @@ Proprietor/Authorized Signatory
     <button onclick="downloadPDF()">⬇ Download PDF</button>
 </div>
 
+intById("rateCell").innerText = rate.toFixed(2);
+
 <script>
+
 function formatINR(num){
     return num.toLocaleString("en-IN",{minimumFractionDigits:2});
 }
@@ -267,9 +270,12 @@ return numberToWords(Math.floor(n/10000000))+" Crore "+numberToWords(n%10000000)
 }
 
 window.onload = function(){
+
 const invoiceNo = localStorage.getItem("invoiceNo");
 const invoiceDate = localStorage.getItem("invoiceDate");
 const vehicleNo = localStorage.getItem("vehicleNo");
+const product = localStorage.getItem("product");
+const hsnCode = localStorage.getItem("hsnCode");
 const qty = parseFloat(localStorage.getItem("qty"));
 const rate = parseFloat(localStorage.getItem("rate"));
 
@@ -282,6 +288,8 @@ const final = amount + totalTax;
 document.getElementById("invNo").innerText = invoiceNo;
 document.getElementById("vehNo").innerText = vehicleNo;
 document.getElementById("invDate").innerText = invoiceDate;
+document.getElementById("productCell").innerText = product;
+document.getElementById("hsnCell").innerText = hsnCode;
 document.getElementById("qtyCell").innerText = qty.toFixed(2);
 document.getElementById("rateCell").innerText = rate.toFixed(2);
 
@@ -324,26 +332,14 @@ function downloadPDF(){
         margin: 0,
         filename: 'Sana_Invoice_' + localStorage.getItem("invoiceNo") + '.pdf',
         image: { type: 'jpeg', quality: 1 },
-
-        html2canvas: {
-            scale: 2,
-            useCORS: true,
-            scrollY: 0
-        },
-
-        jsPDF: {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-        },
-
-        pagebreak: {
-            mode: ['avoid-all', 'css', 'legacy']
-        }
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(element).save();
 }
+
 </script>
 
 </body>
