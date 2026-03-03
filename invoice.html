@@ -11,19 +11,23 @@ body {
     margin: 0;
     padding: 20px;
 }
+html, body {
+    height: auto;
+}
 
 .invoice-box {
     width: 210mm;
-    height: 297mm;
-    padding: 10mm;
-    margin: auto;
+    height: 297mm;              /* exact A4 height */
+    padding: 8mm;               /* reduce slightly */
+    margin: 0 auto;
     background: white;
-    box-sizing: border-box;
+    box-sizing: border-box;     /* ensures padding stays inside 297mm */
+    overflow: hidden;           
 }
 
 .inner-border {
-    border: 3px double #000;
     height: 100%;
+    border: 3px double black;
     padding: 5px;
     box-sizing: border-box;
     display: flex;
@@ -45,7 +49,7 @@ body {
     margin: 2px 0;
     font-size: 13px;
     font-weight: bold;
-    color: #00008b;
+    
 }
 
 table {
@@ -92,7 +96,20 @@ th, td {
     .action-buttons{
         display:none;
     }
+
+    html, body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 0;
+    }
 }
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -164,8 +181,8 @@ APPARTMENT, CHANIKYAPURI COLONY, KURNOOL, A.P.- 518002
 <tbody>
 <tr>
 <td align="center">1</td>
-<td><b>Lime Stone Powder</b></td>
-<td align="center">2521</td>
+<td><b id="productCell"></b></td>
+<td align="center" id="hsnCell"></td>
 <td align="center" id="qtyCell"></td>
 <td></td>
 <td align="center" id="rateCell"></td>
@@ -228,7 +245,10 @@ Proprietor/Authorized Signatory
     <button onclick="downloadPDF()">⬇ Download PDF</button>
 </div>
 
+intById("rateCell").innerText = rate.toFixed(2);
+
 <script>
+
 function formatINR(num){
     return num.toLocaleString("en-IN",{minimumFractionDigits:2});
 }
@@ -250,9 +270,12 @@ return numberToWords(Math.floor(n/10000000))+" Crore "+numberToWords(n%10000000)
 }
 
 window.onload = function(){
+
 const invoiceNo = localStorage.getItem("invoiceNo");
 const invoiceDate = localStorage.getItem("invoiceDate");
 const vehicleNo = localStorage.getItem("vehicleNo");
+const product = localStorage.getItem("product");
+const hsnCode = localStorage.getItem("hsnCode");
 const qty = parseFloat(localStorage.getItem("qty"));
 const rate = parseFloat(localStorage.getItem("rate"));
 
@@ -265,6 +288,8 @@ const final = amount + totalTax;
 document.getElementById("invNo").innerText = invoiceNo;
 document.getElementById("vehNo").innerText = vehicleNo;
 document.getElementById("invDate").innerText = invoiceDate;
+document.getElementById("productCell").innerText = product;
+document.getElementById("hsnCell").innerText = hsnCode;
 document.getElementById("qtyCell").innerText = qty.toFixed(2);
 document.getElementById("rateCell").innerText = rate.toFixed(2);
 
@@ -300,16 +325,21 @@ numberToWords(rupees) + " Rupees And " + numberToWords(paisa) + " Paisa Only";
 function goBack(){ window.location.href="index.html"; }
 
 function downloadPDF(){
+
     const element = document.getElementById("invoiceContent");
+
     const opt = {
         margin: 0,
         filename: 'Sana_Invoice_' + localStorage.getItem("invoiceNo") + '.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, scrollY: -window.scrollY },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
+
     html2pdf().set(opt).from(element).save();
 }
+
 </script>
 
 </body>
