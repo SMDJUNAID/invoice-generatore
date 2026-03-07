@@ -15,14 +15,16 @@ html, body {
     height: auto;
 }
 
+#invoiceContent{
+    page-break-inside: avoid;
+}
 .invoice-box {
-    width: 210mm;
-    height: 297mm;              /* exact A4 height */
-    padding: 8mm;               /* reduce slightly */
+    width: 190mm;
+    height: 277mm;
+    padding: 8mm;
     margin: 0 auto;
     background: white;
-    box-sizing: border-box;     /* ensures padding stays inside 297mm */
-    overflow: hidden;           
+    box-sizing: border-box;
 }
 
 .inner-border {
@@ -189,9 +191,7 @@ APPARTMENT, CHANIKYAPURI COLONY, KURNOOL, A.P.- 518002
 <td class="col-rs" id="amtRs"></td>
 <td class="col-ps" id="amtPs"></td>
 </tr>
-<tr>
-<td style="height:250px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-</tr>
+
 </tbody>
 </table>
 
@@ -329,12 +329,12 @@ function downloadPDF(){
     const element = document.getElementById("invoiceContent");
 
     const opt = {
-        margin: 0,
+        margin: [0,0,0,0],
         filename: 'Sana_Invoice_' + localStorage.getItem("invoiceNo") + '.pdf',
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        html2canvas: { scale: 2, scrollY: 0 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { mode: [] }   // prevent automatic page breaking
     };
 
     html2pdf().set(opt).from(element).save();
