@@ -65,6 +65,16 @@
 
 <script>
 
+window.onload = function(){
+    let lastInvoice = localStorage.getItem("lastInvoiceNo");
+
+    if(lastInvoice === null){
+        document.getElementById("invoiceNo").value = 1;
+    }else{
+        document.getElementById("invoiceNo").value = parseInt(lastInvoice) + 1;
+    }
+}
+
 function setHSN(){
     const productSelect = document.getElementById("product");
     const selectedOption = productSelect.options[productSelect.selectedIndex];
@@ -87,6 +97,7 @@ function goToInvoice(){
         return;
     }
 
+    localStorage.setItem("lastInvoiceNo", invoiceNo);
     localStorage.setItem("invoiceNo", invoiceNo);
     localStorage.setItem("invoiceDate", invoiceDate);
     localStorage.setItem("vehicleNo", vehicleNo);
